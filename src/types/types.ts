@@ -148,17 +148,17 @@ export type NewVisualTestRun = Pick<
  *
  * @property {string} runId - Unique identifier for this test run session
  * @property {number} duration - Total execution time in milliseconds
- * @property {"passed" | "failed"} reason - Final run outcome classification
+ * @property {"passed" | "interrupted" | "failed"} reason - Final run outcome classification
  * @property {object} summary - Aggregated test results statistics
  * @property {object} environment - Execution environment metadata for reproducibility
  *
  * @note The summary provides quick access to test run health without querying individual results
- * @note The reason field indicates whether all tests completed successfully ("passed") or had failures ("failed")
+ * @note The reason field indicates whether all tests completed successfully ("passed"), where interrupted ("interrupted") or had failures ("failed")
  */
 export type VisualTestRun = {
   runId: string;
   duration: number;
-  reason: "passed" | "failed";
+  reason: "passed" | "interrupted" | "failed";
   summary: {
     total: number;
     finished: number;
