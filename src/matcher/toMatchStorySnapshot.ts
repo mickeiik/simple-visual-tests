@@ -4,7 +4,7 @@ import type {
   ComparisonResult,
   StoryIdentifier,
   VisualTestResult,
-} from "../types/types";
+} from "../types";
 import { expect } from "vitest";
 
 /**

@@ -1,7 +1,7 @@
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import type { BrowserCommandContext } from "vitest/node";
-import type { ComparisonResult } from "../types/types";
+import type { ComparisonResult } from "../types";
 
 /**
  * Extends the BrowserCommands interface to add the compareSnapshots command

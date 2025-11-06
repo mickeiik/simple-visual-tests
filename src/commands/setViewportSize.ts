@@ -1,5 +1,5 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
-import type { Viewport } from "../types/types";
+import type { Viewport } from "../types";
 
 /**
  * Extends the Vitest browser context with a custom setViewportSize command

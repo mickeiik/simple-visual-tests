@@ -44,9 +44,6 @@ const simpleVisualTests = (
         },
       };
     },
-    configResolved(config) {
-      // console.log("config :", config.test);
-    },
   },
 ];
 

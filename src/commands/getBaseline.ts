@@ -1,5 +1,5 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
-import type { StoryIdentifier } from "../types/types";
+import type { StoryIdentifier } from "../types";
 import { getBaseline as getBaselineAPI } from "../storage/VisualTestStorageAPI";
 
 declare module "@vitest/browser/context" {

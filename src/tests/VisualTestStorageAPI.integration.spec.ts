@@ -19,7 +19,7 @@ import type {
   NewVisualTestRun,
   StoryIdentifier,
   VisualTestRun,
-} from "../types/types";
+} from "../types";
 import { join } from "path";
 import { access, readdir, readFile, rm, unlink } from "fs/promises";
 

@@ -21,7 +21,8 @@ import type {
   VisualTestRun,
   StoredVisualTestResult,
   VisualTestUpdate,
-} from "../types/types";
+  PublishMsg,
+} from "../types";
 import { v7 as uuidv7 } from "uuid";
 import { join } from "path";
 import { existsSync } from "fs";
@@ -337,19 +338,19 @@ const disconnect = async () => {
 const publish = async (eventType: string, runId: string, payload: any) => {
   if (!client) throw new Error("Redis not connected");
 
-  const msg = JSON.stringify({
+  const msg: PublishMsg = {
     type: eventType,
     runId,
     payload,
-    ts: Date.now(),
-  });
+    timestamp: Date.now(),
+  };
 
   // Publish to both per-run and global channels to support different client subscription patterns
   // Per-run channel: For clients interested in specific test run progress
   // Global channel: For clients monitoring all test activity across runs
   const pipeline = client.multi();
-  pipeline.publish(runChannel(runId), msg);
-  pipeline.publish(GLOBAL_CHANNEL, msg);
+  pipeline.publish(runChannel(runId), JSON.stringify(msg));
+  pipeline.publish(GLOBAL_CHANNEL, JSON.stringify(msg));
   await pipeline.exec();
 };
 
@@ -500,6 +501,7 @@ const updateTest = async (
   await publish("test:updated", runId, {
     storyIdentifier: storyIdentifier,
     status: merged.status,
+    ...partialWithoutBuffers,
   });
 };
 

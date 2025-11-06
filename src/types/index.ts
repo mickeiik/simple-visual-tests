@@ -199,3 +199,10 @@ export type ComparisonResult = {
  * @property {number} height - Viewport height in pixels
  */
 export type Viewport = { width: number; height: number };
+
+export type PublishMsg = {
+  type: string;
+  runId: string;
+  payload: any;
+  timestamp: number;
+};
