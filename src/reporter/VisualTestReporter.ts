@@ -4,6 +4,7 @@
  */
 
 import type { Reporter } from "vitest/reporters";
+import type { Vitest } from "vitest/node";
 import type { SerializedError } from "@vitest/utils";
 import * as VisualTestStorageAPI from "../storage/VisualTestStorageAPI";
 
@@ -11,27 +12,43 @@ import type { TestCase, TestModule, TestRunEndReason } from "vitest/node";
 import type { RedisClientOptions } from "redis";
 
 /**
+ *
+ */
+export type VisualTestReporterOptions = {
+  log?: boolean; // Disable reporter logging (use another reporter like vitest 'default' but keep saving data to Redis/Filesystem)
+};
+
+/**
  * Reporter class that handles visual test execution lifecycle
  */
 export class VisualTestReporter implements Reporter {
   private runId!: string;
+  private vitest!: Vitest;
   private redisClientOptions: RedisClientOptions;
-
+  private visualTestReporterOptions?: VisualTestReporterOptions;
   /**
    * Creates a new VisualTestReporter instance
-   * @param options Redis client configuration options
+   * @param redisOptions Redis client configuration options
+   * @param visualTestReporterOptions VisualTestReporter configuration options
    */
-  constructor(options: RedisClientOptions) {
-    this.redisClientOptions = options;
+  constructor(
+    redisOptions: RedisClientOptions,
+    visualTestReporterOptions?: VisualTestReporterOptions
+  ) {
+    this.redisClientOptions = redisOptions;
+    this.visualTestReporterOptions = visualTestReporterOptions;
   }
 
   /**
    * Initializes the reporter by connecting to Redis
    */
-  async onInit(): Promise<void> {
+  async onInit(ctx: Vitest): Promise<void> {
+    this.vitest = ctx;
     // Connect to Redis
     await VisualTestStorageAPI.connect(this.redisClientOptions);
-    console.debug("[VisualTestReporter] Connected to Redis");
+
+    if (this.visualTestReporterOptions?.log)
+      console.debug("[VisualTestReporter] Connected to Redis");
 
     return;
   }
@@ -39,11 +56,12 @@ export class VisualTestReporter implements Reporter {
   /**
    * Since the tests are dynamically created, the specifications do not contain the real test number
    * This commented-out approach would work for static test definitions but doesn't work for dynamic tests
-   * async onTestRunStart(
-   //   specifications: readonly TestSpecification[]
-   // ): Promise<void> {
-   //   const newRun = await VisualTestStorageAPI.startRun(specifications.length);
-   //   this.runId = newRun.runId;
+   */
+  // async onTestRunStart(
+  //   specifications: readonly TestSpecification[]
+  // ): Promise<void> {
+  //   const newRun = await VisualTestStorageAPI.startRun(specifications.length);
+  //   this.runId = newRun.runId;
 
   //   console.log(
   //     `\n🎬 Visual test run started with ${specifications.length} tests (ID: ${this.runId})`
@@ -57,6 +75,13 @@ export class VisualTestReporter implements Reporter {
    * @param testModule The collected test module containing test cases
    */
   async onTestModuleCollected(testModule: TestModule) {
+    // Basic error logging using vitest logger (keep vitest 'default' logger for better/prettier logging)
+    testModule.errors().map((err) => {
+      this.vitest.logger.printError(err, {
+        fullStack: true,
+      });
+    });
+
     // Count only tests that will be executed (not skipped)
     const totalTests = Array.from(
       testModule.children.allTests("pending")
@@ -65,9 +90,10 @@ export class VisualTestReporter implements Reporter {
     const newRun = await VisualTestStorageAPI.startRun(totalTests);
     this.runId = newRun.runId;
 
-    console.log(
-      `\n🎬 Visual test run started with ${totalTests} tests (ID: ${this.runId})`
-    );
+    if (this.visualTestReporterOptions?.log)
+      console.log(
+        `\n🎬 Visual test run started with ${totalTests} tests (ID: ${this.runId})`
+      );
 
     return;
   }
@@ -77,6 +103,15 @@ export class VisualTestReporter implements Reporter {
    * @param testCase The test case that is ready to run
    */
   async onTestCaseReady(testCase: TestCase): Promise<void> {
+    await VisualTestStorageAPI.connect(this.redisClientOptions);
+
+    // Basic error logging using vitest logger
+    testCase.result().errors?.map((err) => {
+      this.vitest.logger.printError(err, {
+        fullStack: true,
+      });
+    });
+
     if (testCase.options.mode !== "run") {
       // Ignore skipped tests
       return;
@@ -93,6 +128,13 @@ export class VisualTestReporter implements Reporter {
    * @param testCase The test case with its result
    */
   async onTestCaseResult(testCase: TestCase): Promise<void> {
+    // Basic error logging using vitest logger (keep vitest 'default' logger for better/prettier logging)
+    testCase.result().errors?.map((err) => {
+      this.vitest.logger.printError(err, {
+        fullStack: true,
+      });
+    });
+
     if (testCase.options.mode !== "run") {
       // Ignore skipped tests
       return;
@@ -125,7 +167,8 @@ export class VisualTestReporter implements Reporter {
     // Display test result with appropriate icon
     const icon = status === "passed" ? "✅" : status === "failed" ? "❌" : "🆕";
 
-    console.log(`   ${icon} : ${storyId} ${theme} ${width}x${height}`);
+    if (this.visualTestReporterOptions?.log)
+      console.log(`   ${icon} : ${storyId} ${theme} ${width}x${height}`);
 
     return;
   }
@@ -149,26 +192,35 @@ export class VisualTestReporter implements Reporter {
 
     const { summary, duration } = finishedRun;
 
-    console.log(`\n✅ Visual test run ended (${reason})`);
-    console.log(
-      `📊 Summary: ${summary.finished}/${summary.total} finished
-          ✅ ${summary.passed} passed
-          ❌ ${summary.failed} failed
-          🆕 ${summary.new} new`
-    );
-    console.log(`⏱️  Duration: ${(duration / 1000).toFixed(2)}s`);
-
-    if (unhandledErrors.length > 0) {
-      console.error(
-        `[VisualTestReporter] ${unhandledErrors.length} unhandled errors occurred`,
-        unhandledErrors
+    if (this.visualTestReporterOptions?.log) {
+      console.log(`\n✅ Visual test run ended (${reason})`);
+      console.log(
+        `📊 Summary: ${summary.finished}/${summary.total} finished
+        ✅ ${summary.passed} passed
+        ❌ ${summary.failed} failed
+        🆕 ${summary.new} new`
       );
+      console.log(`⏱️  Duration: ${(duration / 1000).toFixed(2)}s`);
+
+      if (unhandledErrors.length > 0) {
+        console.error(
+          `[VisualTestReporter] ${unhandledErrors.length} unhandled errors occurred`,
+          unhandledErrors
+        );
+        // Basic error logging using vitest logger (keep vitest 'default' logger for better/prettier logging)
+        unhandledErrors.map((err) => {
+          this.vitest.logger.printError(err, {
+            fullStack: true,
+          });
+        });
+      }
     }
 
     // Do not disconnect here to maintain Redis connection for potential UI interactions
     // This allows running specific tests from the Vitest UI without losing connection
-    // await VisualTestStorageAPI.disconnect();
-    // console.debug("[VisualTestReporter] Disconnected from Redis");
+    await VisualTestStorageAPI.disconnect();
+    if (this.visualTestReporterOptions?.log)
+      console.debug("[VisualTestReporter] Disconnected from Redis");
 
     return;
   }
