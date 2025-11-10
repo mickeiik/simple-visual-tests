@@ -32,6 +32,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["index.ts", "src/**/*", "templates/visual.spec.ts", "bin/**/*"],
-  "exclude": ["node_modules", "dist", "**/tests/**/*"]
+  "include": ["index.ts", "src/**/*", "bin/**/*"],
+  "exclude": ["node_modules", "dist", "**/tests/**/*", "templates"]
 }

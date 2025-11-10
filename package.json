@@ -19,7 +19,7 @@
     }
   },
   "bin": {
-    "simple-visual-tests": "./bin/cli.js"
+    "simple-visual-tests": "./dist/bin/cli.js"
   },
   "files": [
     "templates",
@@ -38,7 +38,7 @@
     "build": "npm run build:clean && npm run build:ts && npm run copyfiles",
     "build:clean": "rimraf dist && mkdir dist",
     "build:ts": "tsc -p tsconfig.build.json",
-    "copyfiles": "copyfiles ./index.html ./dist",
+    "copyfiles": "copyfiles ./index.html ./dist && copyfiles ./templates/visual.spec.ts ./dist",
     "prepublishOnly": "npm run build"
   },
   "repository": {
