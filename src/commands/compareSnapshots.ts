@@ -28,7 +28,7 @@ export const compareSnapshots: (
   rSnapshot: Buffer,
   options: { threshold: number; maxDiffPercentage: number }
 ) => Promise<ComparisonResult> = async (
-  //@ts-ignore ctx declared but never read - BrowserCommandContext is required for type compatibility but not used in this function
+  //@ts-expect-error ctx declared but never read - BrowserCommandContext is required for type compatibility but not used in this function
   ctx,
   lSnapshot,
   rSnapshot,

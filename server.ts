@@ -17,6 +17,7 @@ interface ImportMetaEnv {
   readonly VITE_VISUAL_TEST_IMAGES_PATH: string;
 }
 
+//@ts-expect-error 'ImportMeta' is declared but never used.ts - Module augmentation
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

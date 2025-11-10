@@ -16,7 +16,7 @@ import { getBaseline as getBaselineAPI } from "../storage/VisualTestStorageAPI.j
  * consistent path generation and error handling across the application.
  */
 export const getBaseline: BrowserCommand<[StoryIdentifier]> = async (
-  //@ts-ignore 'ctx' is declared but its value is never read - BrowserCommandContext is required for type compatibility but not used in this function
+  //@ts-expect-error 'ctx' is declared but its value is never read - BrowserCommandContext is required for type compatibility but not used in this function
   ctx: BrowserCommandContext,
   storyIdentifier: StoryIdentifier
 ): Promise<Buffer | null> => {

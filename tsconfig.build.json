@@ -30,7 +30,11 @@
     "composite": false,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.build.tsbuildinfo",
     "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "erasableSyntaxOnly": true,
+    "noUncheckedSideEffectImports": true
   },
   "include": [
     "browser.ts",
