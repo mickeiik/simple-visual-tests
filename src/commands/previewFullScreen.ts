@@ -1,19 +1,6 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 
 /**
- * Extends the Vitest browser context with custom fullscreen commands
- * These commands allow controlling the fullscreen state of the preview UI during visual tests
- */
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    /** Requests fullscreen mode for the preview UI element */
-    setPreviewFullScreen: () => Promise<void>;
-    /** Exits fullscreen mode if currently in fullscreen */
-    exitPreviewFullScreen: () => Promise<void>;
-  }
-}
-
-/**
  * Requests fullscreen mode for the tester UI element
  *
  * Waits for network idle state to ensure all assets are loaded before entering fullscreen,

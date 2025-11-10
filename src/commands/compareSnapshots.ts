@@ -4,39 +4,6 @@ import type { BrowserCommandContext } from "vitest/node";
 import type { ComparisonResult } from "../types/index.js";
 
 /**
- * Extends the BrowserCommands interface to add the compareSnapshots command
- * This allows the command to be available in Vitest browser contexts
- */
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    /**
-     * Compares two PNG image buffers pixel by pixel to detect visual differences
-     *
-     * This function performs a pixel-level comparison between two images, calculating
-     * the percentage of different pixels and generating a visual diff image. The
-     * comparison accounts for minor variations using a threshold value to determine
-     * what constitutes a significant difference.
-     *
-     * @param ctx - Browser command context (required for type compatibility but unused)
-     * @param lSnapshot - The baseline/left image snapshot as a Buffer
-     * @param rSnapshot - The actual/right image snapshot as a Buffer
-     * @param options - Configuration for the comparison
-     * @param options.threshold - Pixel intensity difference threshold (0-1), values below this are considered equal
-     * @param options.maxDiffPercentage - Maximum allowed difference percentage before images are considered different
-     * @returns Promise resolving to a ComparisonResult with matches status, message, diff image and ratio
-     *
-     * @throws {Error} If images cannot be parsed as valid PNGs
-     * @throws {Error} If pixelmatch encounters an unexpected error during comparison
-     */
-    compareSnapshots: (
-      lSnapshot: Buffer,
-      rSnapshot: Buffer,
-      options: { threshold: number; maxDiffPercentage: number }
-    ) => Promise<ComparisonResult>;
-  }
-}
-
-/**
  * Compares two PNG image buffers pixel by pixel to detect visual differences
  *
  * This function performs a pixel-level comparison between two images, calculating
@@ -61,7 +28,7 @@ export const compareSnapshots: (
   rSnapshot: Buffer,
   options: { threshold: number; maxDiffPercentage: number }
 ) => Promise<ComparisonResult> = async (
-  //@ts-expect-error ctx declared but never read - BrowserCommandContext is required for type compatibility but not used in this function
+  //@ts-ignore ctx declared but never read - BrowserCommandContext is required for type compatibility but not used in this function
   ctx,
   lSnapshot,
   rSnapshot,

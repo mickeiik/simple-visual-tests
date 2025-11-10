@@ -2,39 +2,6 @@ import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 import type { Viewport } from "../types";
 
 /**
- * Extends the Vitest browser context with a custom setViewportSize command
- *
- * This module declaration adds type safety for the custom command in the Vitest
- * browser context, allowing TypeScript to recognize the command and provide
- * proper autocomplete and type checking when using browser commands.
- */
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    /**
-     * Sets the viewport size of the current browser page
-     *
-     * This command is essential for visual regression testing as it allows
-     * controlling the browser dimensions to ensure consistent screenshot
-     * comparisons across different screen sizes and device types.
-     *
-     * @param viewport - Object containing width and height dimensions in pixels
-     * @returns Promise that resolves when viewport size is set
-     *
-     * @example
-     * // Set viewport to mobile size
-     * await commands.setViewportSize({ width: 375, height: 667 });
-     *
-     * @example
-     * // Set viewport to desktop size
-     * await commands.setViewportSize({ width: 1920, height: 1080 });
-     *
-     * @throws {Error} If the browser page is not available or viewport dimensions are invalid
-     */
-    setViewportSize: (viewport: Viewport) => Promise<void>;
-  }
-}
-
-/**
  * Sets the viewport size of the current browser page for visual testing
  *
  * This command provides a clean abstraction over Playwright's setViewportSize

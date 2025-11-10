@@ -32,6 +32,17 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["browser.ts", "server.ts", "src/**/*", "bin/**/*"],
-  "exclude": ["node_modules", "dist", "**/tests/**/*", "templates"]
+  "include": [
+    "browser.ts",
+    "server.ts",
+    "src/**/*",
+    "bin/**/*",
+    "templates/helpers"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/tests/**/*",
+    "templates/visual.spec.ts"
+  ]
 }

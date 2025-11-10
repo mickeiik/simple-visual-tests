@@ -1,34 +1,5 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    /**
-     * Takes a snapshot of a specific element within a frame in the Vitest browser UI iframe
-     *
-     * This command is designed for visual regression testing where we need to capture
-     * a specific element within Storybook's iframe structure. The approach uses
-     * bounding box clipping to focus on the target element while maintaining
-     * full-page context for proper rendering.
-     *
-     * @param frameLocator - CSS selector for the frame containing the target element (e.g., "#visualTestFrame")
-     * @param locator - CSS selector for the specific element to capture (e.g., "html" for entire document)
-     * @returns A Buffer containing the screenshot of the element
-     *
-     * @throws {Error} If the element is not found or has no visible bounding box
-     * @throws {TimeoutError} If page load state doesn't reach "networkidle" within timeout
-     *
-     * @example
-     * // Capture the entire story content within Storybook iframe
-     * const snapshot = await commands.takeSnapshot("#visualTestFrame", "html");
-     *
-     * @example
-     * // Capture a specific component within the story
-     * const snapshot = await commands.takeSnapshot("#visualTestFrame", ".my-component");
-     */
-    takeSnapshot: (frameLocator: string, locator: string) => Promise<Buffer>;
-  }
-}
-
 /**
  * Captures a visual snapshot of a specific element within a nested frame structure
  *

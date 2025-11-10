@@ -72,7 +72,17 @@ export const simpleVisualTests = (
       const __dirname = path.dirname(__filename);
       const packageRoot = path.resolve(__dirname, ".."); // Go up one level from src/ to package root
 
+      const storyMatcherPath = path.join(
+        packageRoot,
+        "/src/matcher/toMatchStorySnapshot.js"
+      );
+
       return {
+        server: {
+          fs: {
+            allow: [storyMatcherPath],
+          },
+        },
         test: {
           reporters: [
             // Initialize the visual test reporter with Redis connection and optional settings
@@ -82,10 +92,7 @@ export const simpleVisualTests = (
             ),
           ],
           // Register the custom matcher for snapshot comparison
-          setupFiles: [
-            path.join(packageRoot, "/src/matcher/toMatchStorySnapshot.js"),
-          ],
-          include: ["visual.spec.js"],
+          setupFiles: [storyMatcherPath],
           browser: {
             // Path to the HTML file used for browser testing environment
             testerHtmlPath: path.join(packageRoot, "/index.html"),

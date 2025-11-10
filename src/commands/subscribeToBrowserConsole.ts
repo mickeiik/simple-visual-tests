@@ -1,16 +1,6 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 
 /**
- * Extends the Vitest browser commands interface to include the subscribeToBrowserConsole command
- * This allows the command to be registered and used within the Vitest browser environment
- */
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    subscribeToBrowserConsole: () => Promise<void>;
-  }
-}
-
-/**
  * Subscribes to browser console messages and forwards them to the Node.js console
  * This is useful for debugging browser-side code during visual tests by capturing
  * console.log, console.error, console.warn, etc. messages from the browser context

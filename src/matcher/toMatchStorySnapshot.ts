@@ -8,33 +8,6 @@ import type {
 import { expect } from "vitest";
 
 /**
- * Extend Vitest's expect API with a custom matcher for visual regression testing
- */
-declare module "vitest" {
-  interface Assertion {
-    /**
-     * Custom matcher to compare a story's visual snapshot against a baseline
-     * @param options Configuration options for the visual comparison
-     */
-    toMatchStorySnapshot: (
-      options?: Partial<{
-        threshold: number;
-        maxDiffPercentage: number;
-        frameLocator: string;
-        locator: string;
-      }>
-    ) => Promise<{
-      pass: boolean;
-      message: () => string;
-    }>;
-  }
-  interface TaskMeta {
-    visualTestResult: VisualTestResult;
-    storyIdentifier: StoryIdentifier;
-  }
-}
-
-/**
  * Custom matcher that compares a visual snapshot of a story against a baseline image
  *
  * The matcher works in three modes:

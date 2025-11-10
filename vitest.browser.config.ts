@@ -1,4 +1,4 @@
-import { defineConfig, defineProject } from "vitest/config";
+import { defineConfig } from "vitest/config";
 import { simpleVisualTests } from "./src/vitestAddon";
 
 export default defineConfig({
@@ -9,29 +9,17 @@ export default defineConfig({
     }),
   ],
   test: {
-    reporters: ["default"],
-    projects: [
-      defineProject({
-        plugins: [
-          simpleVisualTests({
-            url: "redis://localhost:6379",
-          }),
-        ],
-        test: {
-          name: "simple-visual-tests",
-          include: ["./visual.spec.ts"],
-          browser: {
-            enabled: true,
-            provider: "playwright",
-            instances: [
-              {
-                browser: "chromium",
-                headless: true,
-              },
-            ],
-          },
+    include: ["templates/visual.spec.ts"],
+    name: "simple-visual-tests",
+    browser: {
+      enabled: true,
+      provider: "playwright",
+      instances: [
+        {
+          browser: "chromium",
+          headless: true,
         },
-      }),
-    ],
+      ],
+    },
   },
 });

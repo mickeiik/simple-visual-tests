@@ -2,24 +2,6 @@ import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 import type { StoryIdentifier } from "../types/index.js";
 import { getBaseline as getBaselineAPI } from "../storage/VisualTestStorageAPI.js";
 
-declare module "@vitest/browser/context" {
-  interface BrowserCommands {
-    /**
-     * Retrieves the baseline image for a given story identifier
-     *
-     * This command is used by browser tests to fetch previously established
-     * baseline images for visual comparison. The baseline represents the
-     * "expected" visual state of a component/story that tests should match against.
-     *
-     * @param storyIdentifier - The identifier containing storyId, theme, and viewport dimensions
-     *                        that uniquely identifies which baseline image to retrieve
-     * @returns A promise that resolves to the baseline image buffer or null if not found
-     *          Returns null when no baseline has been established for this specific story configuration
-     */
-    getBaseline: (storyIdentifier: StoryIdentifier) => Promise<Buffer | null>;
-  }
-}
-
 /**
  * Browser command implementation for retrieving baseline images
  *
@@ -34,7 +16,7 @@ declare module "@vitest/browser/context" {
  * consistent path generation and error handling across the application.
  */
 export const getBaseline: BrowserCommand<[StoryIdentifier]> = async (
-  //@ts-expect-error 'ctx' is declared but its value is never read - BrowserCommandContext is required for type compatibility but not used in this function
+  //@ts-ignore 'ctx' is declared but its value is never read - BrowserCommandContext is required for type compatibility but not used in this function
   ctx: BrowserCommandContext,
   storyIdentifier: StoryIdentifier
 ): Promise<Buffer | null> => {

@@ -3,29 +3,18 @@
   "version": "0.0.1",
   "type": "module",
   "description": "Simple visual regression testing inside (or out of) Storybook using Vitest Browser mode, Pixelmatch and Redis/Filesystem storage",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "exports": {
     "./browser": {
-      "import": {
-        "types": "./dist/browser.d.ts",
-        "default": "./dist/browser.js"
-      },
-      "require": {
-        "types": "./dist/browser.d.ts",
-        "default": "./dist/browser.cjs"
-      }
+      "types": "./dist/browser.d.ts",
+      "default": "./dist/browser.js"
     },
     "./server": {
-      "import": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.js"
-      },
-      "require": {
-        "types": "./dist/server.d.ts",
-        "default": "./dist/server.cjs"
-      }
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./helpers": {
+      "types": "./dist/templates/helpers/index.d.ts",
+      "default": "./dist/templates/helpers/index.js"
     }
   },
   "bin": {
