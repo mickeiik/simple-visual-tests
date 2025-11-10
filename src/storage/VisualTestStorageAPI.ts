@@ -74,21 +74,14 @@ type ImageMetadata = Pick<
   StoredVisualTestResult,
   "baseline" | "current" | "diff"
 >;
+
 /**
- * Root directory for image storage
+ * Helper for image storage directories
  */
-const IMAGE_STORAGE_ROOT =
+const getStorageRoot = () =>
   process.env.VITE_VISUAL_TEST_IMAGES_PATH || "./visual-test-images";
-
-/**
- * Directory for baseline images
- */
-const BASELINE_DIR = join(IMAGE_STORAGE_ROOT, "baselines");
-
-/**
- * Directory for run images
- */
-const RUNS_DIR = join(IMAGE_STORAGE_ROOT, "runs");
+const getBaselineDir = () => join(getStorageRoot(), "baselines");
+const getRunDir = () => join(getStorageRoot(), "runs");
 
 /**
  * Generate unique image identifier from story identifier
@@ -107,7 +100,7 @@ const getImageId = (storyIdentifier: StoryIdentifier) => {
  */
 const getBaselinePath = (storyIdentifier: StoryIdentifier): string => {
   const imageId = getImageId(storyIdentifier);
-  return join(BASELINE_DIR, `${imageId}.png`);
+  return join(getBaselineDir(), `${imageId}.png`);
 };
 
 /**
@@ -115,7 +108,7 @@ const getBaselinePath = (storyIdentifier: StoryIdentifier): string => {
  * @param runId The unique identifier for the test run
  * @returns Path to the directory for run images
  */
-const getRunImageDir = (runId: string) => join(RUNS_DIR, runId);
+const getRunImageDir = (runId: string) => join(getRunDir(), runId);
 
 /**
  * Get current image path for a test run
@@ -172,8 +165,8 @@ const connect = async (options: RedisClientOptions) => {
  * Create image storage directories if they don't exist
  */
 const ensureImageStorageDirs = async () => {
-  await mkdir(BASELINE_DIR, { recursive: true });
-  await mkdir(RUNS_DIR, { recursive: true });
+  await mkdir(getBaselineDir(), { recursive: true });
+  await mkdir(getRunDir(), { recursive: true });
 };
 
 /**
