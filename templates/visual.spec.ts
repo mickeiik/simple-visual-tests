@@ -1,9 +1,12 @@
 import { commands, page } from "@vitest/browser/context";
 import type { StoryIndexEntry } from "storybook/internal/types";
 import { afterAll, beforeAll, describe, test } from "vitest";
-import { type StoryIdentifier, type Theme } from "../src/types";
 import type { ViewportMap } from "storybook/viewport";
-import { navigateStoryFrame } from "../src/matcher/navigateStoryFrame";
+import {
+  navigateStoryFrame,
+  type StoryIdentifier,
+  type Theme,
+} from "simple-visual-tests/browser";
 
 // Extend vitest TaskMeta to include story identifier
 declare module "vitest" {

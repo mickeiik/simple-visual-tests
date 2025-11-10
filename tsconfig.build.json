@@ -32,6 +32,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true
   },
-  "include": ["index.ts", "src/**/*", "bin/**/*"],
+  "include": ["browser.ts", "server.ts", "src/**/*", "bin/**/*"],
   "exclude": ["node_modules", "dist", "**/tests/**/*", "templates"]
 }
