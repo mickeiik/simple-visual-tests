@@ -1,13 +1,13 @@
-import { compareSnapshots } from "./compareSnapshots";
-import { takeSnapshot } from "./takeSnapshot";
-import { setViewportSize } from "./setViewportSize";
-import { subscribeToBrowserConsole } from "./subscribeToBrowserConsole";
-import { startTrace, endTrace } from "./playwrightTracing";
-import { getBaseline } from "./getBaseline";
+import { compareSnapshots } from "./compareSnapshots.js";
+import { takeSnapshot } from "./takeSnapshot.js";
+import { setViewportSize } from "./setViewportSize.js";
+import { subscribeToBrowserConsole } from "./subscribeToBrowserConsole.js";
+import { startTrace, endTrace } from "./playwrightTracing.js";
+import { getBaseline } from "./getBaseline.js";
 import {
   setPreviewFullScreen,
   exitPreviewFullScreen,
-} from "./previewFullScreen";
+} from "./previewFullScreen.js";
 
 export {
   getBaseline,

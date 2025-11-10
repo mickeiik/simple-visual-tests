@@ -24,5 +24,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "visual.spec.ts"]
+  "include": ["src", "templates/visual.spec.ts", "index.ts"]
 }

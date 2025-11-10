@@ -22,7 +22,7 @@ import type {
   StoredVisualTestResult,
   VisualTestUpdate,
   PublishMsg,
-} from "../types";
+} from "../types/index.js";
 import { v7 as uuidv7 } from "uuid";
 import { join } from "path";
 import { existsSync } from "fs";

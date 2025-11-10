@@ -6,7 +6,7 @@
 import type { Reporter } from "vitest/reporters";
 import type { Vitest } from "vitest/node";
 import type { SerializedError } from "@vitest/utils";
-import * as VisualTestStorageAPI from "../storage/VisualTestStorageAPI";
+import * as VisualTestStorageAPI from "../storage/VisualTestStorageAPI.js";
 
 import type { TestCase, TestModule, TestRunEndReason } from "vitest/node";
 import type { RedisClientOptions } from "redis";

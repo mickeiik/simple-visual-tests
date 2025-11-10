@@ -4,7 +4,7 @@ import type {
   ComparisonResult,
   StoryIdentifier,
   VisualTestResult,
-} from "../types";
+} from "../types/index.js";
 import { expect } from "vitest";
 
 /**

@@ -6,6 +6,8 @@
  * This file exports a Vite plugin factory that sets up visual testing infrastructure
  * using Redis for storage and a custom VisualTestReporter for test results.
  */
+import path from "path";
+import { fileURLToPath } from "url";
 
 import {
   setViewportSize,
@@ -14,12 +16,12 @@ import {
   takeSnapshot,
   compareSnapshots,
   getBaseline,
-} from "./commands";
+} from "./commands/index.js";
 import type { RedisClientOptions } from "redis";
 import type { PluginOption } from "vite";
 import VisualTestReporter, {
   type VisualTestReporterOptions,
-} from "./reporter/VisualTestReporter";
+} from "./reporter/VisualTestReporter.js";
 
 /**
  * Creates a Vite plugin configuration for visual regression testing.
@@ -64,7 +66,12 @@ export const simpleVisualTests = (
      * @param param1 - Vite environment context containing command information
      * @param param1.command - The current Vite command (build, serve, etc.)
      */
-    config: (config, { command }) => {
+    config: () => {
+      // Get the directory of the current module (the plugin) to resolve paths relative to the package
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      const packageRoot = path.resolve(__dirname, ".."); // Go up one level from src/ to package root
+
       return {
         test: {
           reporters: [
@@ -75,10 +82,13 @@ export const simpleVisualTests = (
             ),
           ],
           // Register the custom matcher for snapshot comparison
-          setupFiles: ["./src/matcher/toMatchStorySnapshot.ts"],
+          setupFiles: [
+            path.join(packageRoot, "/src/matcher/toMatchStorySnapshot.js"),
+          ],
+          include: ["visual.spec.js"],
           browser: {
             // Path to the HTML file used for browser testing environment
-            testerHtmlPath: "./index.html",
+            testerHtmlPath: path.join(packageRoot, "/index.html"),
             // Expose visual testing commands to the browser environment
             commands: {
               takeSnapshot,
