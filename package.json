@@ -24,6 +24,9 @@
   "files": [
     "templates",
     "dist/**/*",
+    "src",
+    "index.ts",
+    "bin",
     "index.html",
     "README.md",
     "LICENSE"
