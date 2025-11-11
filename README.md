@@ -2,7 +2,8 @@
 
 Simple visual regression testing for Storybook stories using Vitest Browser mode, Pixelmatch and Redis/Filesystem storage.
 
-- [Redis Key space, Conventions and Data Model](/src/storage/README.md)
+- [Redis Key space, Conventions and Data Model](/src/storage/)
+- [Custom Vitest Commands](/src/commands/)
 
 ## High-level Architecture Overview
 
@@ -117,10 +118,9 @@ Modify Vite Config via Vite Plugin (`simpleVisualTests(redisClientOptions)` [vit
 npx vitest --config=./vitest.visual.config.ts
 ```
 
-## Features
+## Next Up
 
-- Visual regression testing with Vitest Browser mode
-- Storybook integration
-- Redis-based storage for test results
-- Real-time event publishing
-- Cross-platform compatibility
+- Enable test configuration through `STORY_IDS` and `VIEWPORTS` env vars
+- Add `visualTestServerBridge.ts` to spawn test runs for set of stories/viewports and broadcast progress to clients through websocket
+- Add storybook UI addon to manage visual regression tests for stories from storybook
+- Add docker-compose/dockerfile templates to run tests in container
