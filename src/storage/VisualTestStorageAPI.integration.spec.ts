@@ -27,7 +27,7 @@ import { access, readdir, readFile, rm, unlink } from "fs/promises";
 /**
  * Mock storage root directory for test images during integration tests
  */
-const MOCK_STORAGE_ROOT = "./src/tests/spec-image-dir";
+const MOCK_STORAGE_ROOT = "./spec-image-dir";
 
 /**
  * Creates a fake image buffer for testing purposes

@@ -1,5 +1,5 @@
 import { describe, expect } from "vitest";
-import { compareSnapshots } from "../commands/compareSnapshots";
+import { compareSnapshots } from "./compareSnapshots";
 import { test } from "vitest";
 import type { BrowserCommandContext } from "vitest/node";
 import { PNG } from "pngjs";
