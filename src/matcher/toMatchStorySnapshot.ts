@@ -15,8 +15,12 @@ import { expect } from "vitest";
  * 2. When no baseline exists, creates a new baseline and passes the test
  * 3. When baseline exists, compares current snapshot with baseline and reports differences
  *
- * @param storyIdentifier Unique identifier for the story being tested
+ * @param storyIdentifier Unique `storyIdentifier` to test (that would be `expect(storyId)` parameter passed here)
  * @param options Configuration for the visual comparison
+ * @param options.threshold Pixel intensity difference threshold (Default 0.1 = 10% difference allowed per pixel)
+ * @param options.maxDiffPercentage Maximum percentage of pixels that can differ (Default 1 = 1% of total pixels)
+ * @param options.frameLocator CSS Selector for the frame containing Storybook preview iframe (Default `#visualTestFrame` injected via `testerHtmlPath` vitest browser config)
+ * @param options.locator Element selector to screenshot inside `frameLocator` (Default entire HTML document of frameLocator `html`)
  * @returns Promise with pass/fail status and diagnostic message
  */
 const toMatchStorySnapshot: (

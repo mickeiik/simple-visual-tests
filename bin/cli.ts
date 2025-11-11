@@ -9,13 +9,27 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const command = process.argv[2];
 
 if (command === "init") {
-  const templatePath = path.join(__dirname, "../templates/visual.spec.ts");
-  const targetPath = path.join(process.cwd(), "tests/visual.spec.ts");
+  const specTemplatePath = path.join(__dirname, "../templates/visual.spec.ts");
+  const specTargetPath = path.join(process.cwd(), "tests/visual.spec.ts");
 
-  fs.mkdirSync(path.dirname(targetPath), { recursive: true });
-  fs.copyFileSync(templatePath, targetPath);
+  const vitestConfigTemplatePath = path.join(
+    __dirname,
+    "../templates/vitest.visual.config.ts"
+  );
+  const vitestConfigTargetPath = path.join(
+    process.cwd(),
+    "./vitest.visual.config.ts"
+  );
+
+  fs.mkdirSync(path.dirname(specTargetPath), { recursive: true });
+  fs.copyFileSync(specTemplatePath, specTargetPath);
 
   console.log("✓ Created tests/visual.spec.ts");
+
+  fs.mkdirSync(path.dirname(vitestConfigTargetPath), { recursive: true });
+  fs.copyFileSync(vitestConfigTemplatePath, vitestConfigTargetPath);
+
+  console.log("✓ Created ./vitest.visual.config.ts");
 } else {
   console.log(`
 Usage: npx simple-visual-tests <command>

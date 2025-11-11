@@ -37,12 +37,12 @@
     "build": "npm run build:clean && npm run build:ts && npm run copyfiles",
     "build:clean": "rimraf dist && mkdir dist",
     "build:ts": "tsc -p tsconfig.build.json",
-    "copyfiles": "copyfiles ./index.html ./dist && copyfiles ./templates/visual.spec.ts ./dist",
+    "copyfiles": "copyfiles testerHtml.html templates/visual.spec.ts templates/vitest.visual.config.ts dist",
     "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/simple-visual-tests.git"
+    "url": "https://github.com/mickeiik/simple-visual-tests.git"
   },
   "keywords": [
     "visual",
@@ -63,9 +63,9 @@
   "author": "Mickaël Dk",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/your-username/simple-visual-tests/issues"
+    "url": "https://github.com/mickeiik/simple-visual-tests/issues"
   },
-  "homepage": "https://github.com/your-username/simple-visual-tests#readme",
+  "homepage": "https://github.com/mickeiik/simple-visual-tests#readme",
   "dependencies": {
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",

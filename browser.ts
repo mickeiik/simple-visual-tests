@@ -13,7 +13,6 @@ declare module "@vitest/browser/context" {
      * comparison accounts for minor variations using a threshold value to determine
      * what constitutes a significant difference.
      *
-     * @param ctx - Browser command context (required for type compatibility but unused)
      * @param lSnapshot - The baseline/left image snapshot as a Buffer
      * @param rSnapshot - The actual/right image snapshot as a Buffer
      * @param options - Configuration for the comparison
@@ -37,16 +36,35 @@ declare module "@vitest/browser/context" {
      * baseline images for visual comparison. The baseline represents the
      * "expected" visual state of a component/story that tests should match against.
      *
-     * @param storyIdentifier - The identifier containing storyId, theme, and viewport dimensions
-     *                        that uniquely identifies which baseline image to retrieve
-     * @returns A promise that resolves to the baseline image buffer or null if not found
-     *          Returns null when no baseline has been established for this specific story configuration
+     * @param storyIdentifier - The identifier containing storyId, theme, and viewport dimensions that uniquely identifies which baseline image to retrieve
+     * @returns A promise that resolves to the baseline image buffer or null if not found. Returns null when no baseline has been established for this specific story configuration
      */
     getBaseline: (storyIdentifier: StoryIdentifier) => Promise<Buffer | null>;
-    /** Requests fullscreen mode for the preview UI element */
+
+    /**
+     * Requests fullscreen mode for the tester UI element
+     *
+     * Waits for network idle state to ensure all assets are loaded before entering fullscreen,
+     * then attempts to make the "tester-ui" element fullscreen. The element must exist in the DOM
+     * and the browser must support the Fullscreen API for this to work.
+     *
+     * @returns Promise resolving when fullscreen request is processed
+     * @throws May throw if the page context is invalid or browser doesn't support fullscreen
+     */
     setPreviewFullScreen: () => Promise<void>;
-    /** Exits fullscreen mode if currently in fullscreen */
+
+    /**
+     * Exits fullscreen mode if currently in fullscreen
+     *
+     * This command calls the browser's exitFullscreen API to return from fullscreen mode.
+     * Note that this will only work if the current document is in fullscreen mode and
+     * the user initiated the fullscreen state (browsers have security restrictions around this).
+     *
+     * @returns Promise resolving when exit fullscreen request is processed
+     * @throws May throw if fullscreen exit is blocked by browser security policies
+     */
     exitPreviewFullScreen: () => Promise<void>;
+
     /**
      * Sets the viewport size of the current browser page
      *
@@ -68,6 +86,7 @@ declare module "@vitest/browser/context" {
      * @throws {Error} If the browser page is not available or viewport dimensions are invalid
      */
     setViewportSize: (viewport: Viewport) => Promise<void>;
+
     /**
      * Takes a snapshot of a specific element within a frame in the Vitest browser UI iframe
      *
@@ -103,8 +122,19 @@ import type { Assertion } from "vitest";
 declare module "vitest" {
   interface Assertion {
     /**
-     * Custom matcher to compare a story's visual snapshot against a baseline
-     * @param options Configuration options for the visual comparison
+     * Custom matcher that compares a visual snapshot of a story against a baseline image
+     *
+     * The matcher works in three modes:
+     * 1. When VITE_UPDATE_VISUAL_SNAPSHOTS=true, creates new baseline images
+     * 2. When no baseline exists, creates a new baseline and passes the test
+     * 3. When baseline exists, compares current snapshot with baseline and reports differences
+     *
+     * @param options Configuration for the visual comparison
+     * @param options.threshold Pixel intensity difference threshold (Default 0.1 = 10% difference allowed per pixel)
+     * @param options.maxDiffPercentage Maximum percentage of pixels that can differ (Default 1 = 1% of total pixels)
+     * @param options.frameLocator Frame locator for Storybook preview iframe (Default `#visualTestFrame` injected via `testerHtmlPath` vitest browser config)
+     * @param options.locator Element selector to screenshot inside `frameLocator` (Default entire HTML document `html`)
+     * @returns Promise with pass/fail status and diagnostic message
      */
     toMatchStorySnapshot: (
       options?: Partial<{

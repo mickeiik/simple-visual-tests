@@ -13,16 +13,18 @@ import {
   parsePxSizeToNumber,
   setViewport,
 } from "simple-visual-tests/helpers";
+import type { ViewportMap } from "storybook/internal/viewport";
 
 /**
  * Visual regression test suite that iterates through all stories, themes, and viewports
  * Creates a comprehensive test matrix for visual testing across different configurations
  */
 describe("basic", async () => {
-  // Load stories and viewports
+  // Load stories and viewports from storybook instance at `localhost:6006` or `VITE_STORYBOOK_URL` ENV variable
   let stories: StoryIndexEntry[] = await loadStories();
-  let testedViewports = await getStorybookViewportsOrDefaultDesktop();
-  let initialDOMRect: DOMRect;
+  let testedViewports: ViewportMap =
+    await getStorybookViewportsOrDefaultDesktop();
+  let initialDOMRect: DOMRect; // Will capture initial viewport for restoration after tests
 
   const themes = ["light", "dark"] as Theme[];
 
@@ -49,7 +51,7 @@ describe("basic", async () => {
           height: parsePxSizeToNumber(storybookViewport.styles.height),
         };
 
-        test(`should match screenshot for ${storyId} in ${storybookViewport.name} with ${theme} theme`, async ({
+        test(`should match snapshot for ${storyId} on '${storybookViewport.name}' with '${theme}' theme`, async ({
           task,
           expect,
         }) => {

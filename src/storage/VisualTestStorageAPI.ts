@@ -79,7 +79,7 @@ type ImageMetadata = Pick<
  * Helper for image storage directories
  */
 const getStorageRoot = () =>
-  process.env.VITE_VISUAL_TEST_IMAGES_PATH || "./visual-test-images";
+  process.env.VITE_VISUAL_TEST_IMAGES_PATH || "./tests/visual-test-images";
 const getBaselineDir = () => join(getStorageRoot(), "baselines");
 const getRunDir = () => join(getStorageRoot(), "runs");
 

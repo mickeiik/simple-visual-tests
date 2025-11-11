@@ -8,7 +8,7 @@ import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
  * and the browser must support the Fullscreen API for this to work.
  *
  * @param ctx - The browser command context containing the page instance
- * @returns Promise resolving when fullscreen request is processed (may not be granted)
+ * @returns Promise resolving when fullscreen request is processed
  * @throws May throw if the page context is invalid or browser doesn't support fullscreen
  */
 export const setPreviewFullScreen: BrowserCommand<[]> = async (
