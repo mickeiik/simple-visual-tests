@@ -8,7 +8,7 @@ import {
   type Theme,
 } from "simple-visual-tests/browser";
 import {
-  getStorybookViewportsOrDefaultDesktop,
+  getViewportConfig,
   loadStories,
   parsePxSizeToNumber,
   setViewport,
@@ -22,8 +22,7 @@ import type { ViewportMap } from "storybook/internal/viewport";
 describe("basic", async () => {
   // Load stories and viewports from storybook instance at `localhost:6006` or `VITE_STORYBOOK_URL` ENV variable
   let stories: StoryIndexEntry[] = await loadStories();
-  let testedViewports: ViewportMap =
-    await getStorybookViewportsOrDefaultDesktop();
+  let testedViewports: ViewportMap = await getViewportConfig();
   let initialDOMRect: DOMRect; // Will capture initial viewport for restoration after tests
 
   const themes = ["light", "dark"] as Theme[];

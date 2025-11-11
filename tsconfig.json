@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "browser.ts", "server.ts", "templates"]
+  "include": ["src", "browser.ts", "server.ts", "storybook.ts", "templates"]
 }

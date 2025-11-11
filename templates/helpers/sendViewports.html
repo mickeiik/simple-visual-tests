@@ -1,0 +1,46 @@
+<script>
+  /**
+   * Waits for Storybook viewport configuration to become available in the global store.
+   *
+   * Storybook's viewport configuration is loaded asynchronously, so this function polls
+   * the global store until the viewport options are available. Once found, it resolves
+   * with the viewport configuration data.
+   *
+   * @returns {Promise<Object>} A promise that resolves with the viewport options
+   *    from Storybook's project annotations when they become available.
+   */
+  function waitForEnvVar() {
+    return new Promise((resolve, reject) => {
+      const intervalId = setInterval(() => {
+        try {
+          if (
+            window.__STORYBOOK_PREVIEW__.storyStoreValue.projectAnnotations
+              .parameters?.viewport?.options
+          ) {
+            clearInterval(intervalId);
+            resolve(
+              window.__STORYBOOK_PREVIEW__.storyStoreValue.projectAnnotations
+                .parameters?.viewport?.options
+            );
+          }
+        } catch {
+          // TODO: Handle error ? Limit retries ?
+        }
+      }, 100); // Check every 100 milliseconds for availability of thatObject
+    });
+  }
+
+  /**
+   * Fetches viewport configurations from Storybook and sends them to the parent window.
+   *
+   * This script must be embedded in Storybook preview frames to extract viewport configurations
+   * and communicate them to the parent testing environment via postMessage API.
+   * The viewport data is essential for visual testing across different screen sizes.
+   */
+  waitForEnvVar().then((viewports) => {
+    window.parent.postMessage(
+      JSON.stringify({ type: "STORYBOOK_VIEWPORTS", viewports }),
+      "*"
+    );
+  });
+</script>

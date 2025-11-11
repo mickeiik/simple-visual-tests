@@ -105,9 +105,11 @@ Modify Vite Config via Vite Plugin (`simpleVisualTests(redisClientOptions)` [vit
 
 - ENV Variables:
 
-  - `VITE_STORYBOOK_URL` defaults to `http://localhost:6006`
-  - `VITE_UPDATE_VISUAL_SNAPSHOTS` will force update snapshots if set to 'true'
-  - `VITE_VISUAL_TEST_IMAGES_PATH` directory path where snapshots are saved (default to `./tests/visual-test-images`)
+  - `VITE_STORYBOOK_URL=http://localhost:6006` running storybook instance URL
+  - `VITE_UPDATE_VISUAL_SNAPSHOTS=false` will force update snapshots if set to 'true'
+  - `VITE_VISUAL_TEST_IMAGES_PATH=./tests/visual-test-images` directory path where snapshots are saved
+  - `VITE_STORY_IDS=storyId1;storyId2;storyId3` colon separated list storyIds to test (if they exist on the storybook `index.json`)
+  - `VITE_TESTED_VIEWPORTS=desktop,1440,900;mobile,600px,900px` colon separated list of comma separated viewport tuple to test (`name,width,height`)
 
 - [node-redis](https://github.com/redis/node-redis/tree/master) `createClient`: [Official Configuration Documentation](https://github.com/redis/node-redis/blob/master/docs/client-configuration.md)
   - Redis connection made by [VisualTestReporter.ts](/src/reporter/VisualTestReporter.ts) initialized by `simpleVisualTests(redisClientOptions)` if you're using [vitestAddon.ts](/src/vitestAddon.ts) (default `url: "redis://localhost:6379"`)
@@ -120,9 +122,11 @@ npx vitest --config=./vitest.visual.config.ts
 
 ## Next Up
 
-- Enable testing subsets through `STORY_IDS` and `VIEWPORTS` env vars
+- <s>Enable testing subsets through `VITE_STORY_IDS` and `TESTED_VIEWPORTS` env vars </s>
+- Document storybook preview html setup for viewport loading from instance
 - Add `visualTestServerBridge.ts` to spawn test runs for set of stories/viewports and broadcast progress to clients through websocket
-- Add storybook UI addon to manage visual regression tests for stories from storybook
+- Move data persistence from vitest reporter to the bridge (bridge is the orchestrator. VisualTestReporter becomes a BridgeClientReporter)
+- Add storybook UI addon to manage visual regression tests directly from storybook through the bridge
 - Expand unit testing
 - Add CI testing pipeline
 - Project showcase

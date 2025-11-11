@@ -7,6 +7,8 @@ export default defineConfig({
       "./src/storage/RedisPubSub.integration.spec.ts",
       "./src/storage/VisualTestStorageAPI.integration.spec.ts",
       "./src/commands/compareSnapshots.spec.ts",
+      "./templates/helpers/loadStories.spec.ts",
+      "./templates/helpers/getViewportConfig.spec.ts",
     ],
   },
 });

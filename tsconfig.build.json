@@ -39,6 +39,7 @@
   "include": [
     "browser.ts",
     "server.ts",
+    "storybook.ts",
     "src/**/*",
     "bin/**/*",
     "templates/helpers"
