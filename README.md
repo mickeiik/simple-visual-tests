@@ -120,7 +120,32 @@ npx vitest --config=./vitest.visual.config.ts
 
 ## Next Up
 
-- Enable test configuration through `STORY_IDS` and `VIEWPORTS` env vars
+- Enable testing subsets through `STORY_IDS` and `VIEWPORTS` env vars
 - Add `visualTestServerBridge.ts` to spawn test runs for set of stories/viewports and broadcast progress to clients through websocket
 - Add storybook UI addon to manage visual regression tests for stories from storybook
+- Expand unit testing
+- Add CI testing pipeline
+- Project showcase
+- Cleanup strategy to avoid filesystem bloat
 - Add docker-compose/dockerfile templates to run tests in container
+
+## Nice to have
+
+- Story lazy loading/streaming for large storybooks
+- 'Lite mode' without redis for quick setup (JSON files (`lowdb`?) ? SQLite ?)
+- S3 image storage
+- Analytics: average diffs ratios, test durations, etc.
+- Expand CLI (list runs, accept baseline, ..)
+- Structural similarity comparison algorithm (SSIM)
+- Support for masks/ignored region
+
+## Security thoughts
+
+- Prevent path traversal ?
+- Only safe environnement variables in browser context ?
+
+## Performance thoughts
+
+- Compress diffs for storage ?
+- Skip diff generation for passing test cases ?
+- Parallelize image comparisons ?
