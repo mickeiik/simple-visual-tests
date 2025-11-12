@@ -177,9 +177,19 @@ import type {
   VisualTestResult,
 } from "./src/types/index.js";
 
-import { navigateStoryFrame } from "./src/matcher/navigateStoryFrame.js";
+import {
+  getViewportConfig,
+  loadStories,
+  parsePxSizeToNumber,
+  setViewport,
+  navigateStoryFrame,
+} from "./templates/helpers";
 
 export {
+  getViewportConfig,
+  loadStories,
+  parsePxSizeToNumber,
+  setViewport,
   navigateStoryFrame,
   type StoryIdentifier,
   type Theme,

@@ -1,8 +1,10 @@
-## Available Commands
+# Available Commands
 
 Each command is documented with JSDoc comments that describe its purpose, parameters, return values, and potential error conditions.
 
 See vitest documentation on [Custom Commands](https://vitest.dev/api/browser/commands.html#custom-commands).
+
+## Command Reference
 
 ### `takeSnapshot(frameLocator, locator)`
 
@@ -19,9 +21,9 @@ Captures a visual snapshot of a specific element within a nested frame structure
 Compares two PNG image buffers pixel by pixel to detect visual differences.
 
 - **Parameters**:
-  - `ctx`: Browser command context (required for type compatibility but unused)
   - `lSnapshot`: The baseline/left image snapshot as a Buffer
   - `rSnapshot`: The actual/right image snapshot as a Buffer
+  - `options`: Configuration object containing comparison settings
   - `options.threshold`: Pixel intensity difference threshold (0-1), values below this are considered equal
   - `options.maxDiffPercentage`: Maximum allowed difference percentage before images are considered different
 - **Returns**: Promise resolving to a ComparisonResult with matches status, message, diff image and ratio
@@ -82,11 +84,11 @@ Starts Playwright tracing to capture browser interactions.
 Stops Playwright tracing and saves the trace file.
 
 - **Parameters**:
-  - `savePath` (optional): Path where the trace file should be saved (defaults to "trace.zip")
+  - `savePath` (optional): Path where the trace file should be saved (defaults to "./trace.zip")
 - **Returns**: Promise resolving when tracing has stopped
 - **Description**: Stops Playwright tracing and saves the trace file for debugging and analysis.
 
-## Usage
+## Configuration
 
 These commands are typically used in conjunction with Vitest's browser testing capabilities. They can be imported and used within test files to perform specific actions during visual regression tests.
 
@@ -97,18 +99,22 @@ test {
   browser: {
     // Expose commands to the browser environment
     commands: {
-    takeSnapshot,
+      takeSnapshot,
       getBaseline,
       compareSnapshots,
       setViewportSize,
       setPreviewFullScreen,
       exitPreviewFullScreen,
+      startTrace,
+      endTrace,
     },
   },
 }
 ```
 
-Example:
+## Usage Examples
+
+### Basic Snapshot Capture and Comparison
 
 ```typescript
 import { commands } from "@vitest/browser/context";
@@ -119,9 +125,70 @@ const snapshot = await commands.takeSnapshot(
   "#my-component"
 );
 
+// Get the baseline image
+const baseline = await commands.getBaseline({
+  storyId: "my-story",
+  theme: "light",
+  viewport: { width: 1200, height: 800 },
+});
+
 // Compare with a baseline
-const result = await commands.compareSnapshots(ctx, baseline, snapshot, {
+const result = await commands.compareSnapshots(baseline, snapshot, {
   threshold: 0.1,
   maxDiffPercentage: 0.1,
 });
+
+console.log(result.message); // Log the comparison result
+```
+
+### Viewport Management
+
+```typescript
+import { commands } from "@vitest/browser/context";
+
+// Set viewport size for responsive testing
+await commands.setViewportSize({
+  width: 375, // Mobile width
+  height: 667, // Mobile height
+});
+
+// Take mobile screenshot
+const mobileSnapshot = await commands.takeSnapshot(
+  "#storybook-frame",
+  "#my-component"
+);
+```
+
+### Tracing for Debugging
+
+```typescript
+import { commands } from "@vitest/browser/context";
+
+// Start tracing to capture browser interactions
+await commands.startTrace();
+
+// Perform test actions
+const snapshot = await commands.takeSnapshot("#frame", "#element");
+
+// Stop tracing and save to file
+await commands.endTrace("my-test-trace.zip");
+```
+
+**Analyzing Traces**: The generated `.zip` archive can be uploaded to Playwright's online trace viewer at [https://trace.playwright.dev/](https://trace.playwright.dev/) for detailed analysis of browser interactions, screenshots, and page snapshots.
+
+### Fullscreen Mode
+
+```typescript
+import { commands } from "@vitest/browser/context";
+
+// Enter fullscreen mode for consistent testing environment
+await commands.setPreviewFullScreen();
+
+try {
+  // Perform tests in fullscreen
+  const snapshot = await commands.takeSnapshot("#frame", "#element");
+} finally {
+  // Always exit fullscreen after tests
+  await commands.exitPreviewFullScreen();
+}
 ```

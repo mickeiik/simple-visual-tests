@@ -4,15 +4,14 @@ import { afterAll, beforeAll, describe, test } from "vitest";
 
 import {
   navigateStoryFrame,
-  type StoryIdentifier,
-  type Theme,
-} from "simple-visual-tests/browser";
-import {
   getViewportConfig,
   loadStories,
   parsePxSizeToNumber,
   setViewport,
-} from "simple-visual-tests/helpers";
+  type StoryIdentifier,
+  type Theme,
+} from "simple-visual-tests/browser";
+
 import type { ViewportMap } from "storybook/internal/viewport";
 
 /**

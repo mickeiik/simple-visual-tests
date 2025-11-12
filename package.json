@@ -15,10 +15,6 @@
     "./storybook": {
       "types": "./dist/storybook.d.ts",
       "default": "./dist/storybook.js"
-    },
-    "./helpers": {
-      "types": "./dist/templates/helpers/index.d.ts",
-      "default": "./dist/templates/helpers/index.js"
     }
   },
   "bin": {

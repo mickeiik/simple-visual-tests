@@ -16,6 +16,8 @@ import {
   takeSnapshot,
   compareSnapshots,
   getBaseline,
+  startTrace,
+  endTrace,
 } from "./commands/index.js";
 import type { RedisClientOptions } from "redis";
 import type { PluginOption } from "vite";
@@ -104,6 +106,8 @@ export const simpleVisualTests = (
               setViewportSize,
               setPreviewFullScreen,
               exitPreviewFullScreen,
+              startTrace,
+              endTrace,
             },
           },
         },

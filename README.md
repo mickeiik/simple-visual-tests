@@ -122,8 +122,8 @@ npx vitest --config=./vitest.visual.config.ts
 
 ## Next Up
 
-- <s>Enable testing subsets through `VITE_STORY_IDS` and `TESTED_VIEWPORTS` env vars </s>
-- Document storybook preview html setup for viewport loading from instance
+- <s>Enable testing subsets through `VITE_STORY_IDS` and `TESTED_VIEWPORTS` env vars</s>
+- <s>Document storybook preview html setup for viewport loading from instance</s>
 - Add `visualTestServerBridge.ts` to spawn test runs for set of stories/viewports and broadcast progress to clients through websocket
 - Move data persistence from vitest reporter to the bridge (bridge is the orchestrator. VisualTestReporter becomes a BridgeClientReporter)
 - Add storybook UI addon to manage visual regression tests directly from storybook through the bridge

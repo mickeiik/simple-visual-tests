@@ -2,5 +2,12 @@ import { getViewportConfig } from "./getViewportConfig.js";
 import { loadStories } from "./loadStories.js";
 import { parsePxSizeToNumber } from "./parsePxSizeToNumber.js";
 import { setViewport } from "./setViewport.js";
+import { navigateStoryFrame } from "./navigateStoryFrame.js";
 
-export { getViewportConfig, loadStories, parsePxSizeToNumber, setViewport };
+export {
+  getViewportConfig,
+  loadStories,
+  parsePxSizeToNumber,
+  setViewport,
+  navigateStoryFrame,
+};
