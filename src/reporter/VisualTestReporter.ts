@@ -6,7 +6,7 @@
 import type { Reporter } from "vitest/reporters";
 import type { Vitest } from "vitest/node";
 import type { SerializedError } from "@vitest/utils";
-import * as VisualTestStorageAPI from "../storage/VisualTestStorageAPI.js";
+import { VisualTestStorageAPI } from "../storage/VisualTestStorageAPI";
 
 import type { TestCase, TestModule, TestRunEndReason } from "vitest/node";
 import type { RedisClientOptions } from "redis";
@@ -24,7 +24,7 @@ export type VisualTestReporterOptions = {
 export class VisualTestReporter implements Reporter {
   private runId!: string;
   private vitest!: Vitest;
-  private redisClientOptions: RedisClientOptions;
+  private visualTestStorageApi: VisualTestStorageAPI;
   private visualTestReporterOptions?: VisualTestReporterOptions;
   /**
    * Creates a new VisualTestReporter instance
@@ -35,7 +35,7 @@ export class VisualTestReporter implements Reporter {
     redisOptions: RedisClientOptions,
     visualTestReporterOptions?: VisualTestReporterOptions
   ) {
-    this.redisClientOptions = redisOptions;
+    this.visualTestStorageApi = new VisualTestStorageAPI(redisOptions);
     this.visualTestReporterOptions = visualTestReporterOptions;
   }
 
@@ -45,7 +45,7 @@ export class VisualTestReporter implements Reporter {
   async onInit(ctx: Vitest): Promise<void> {
     this.vitest = ctx;
     // Connect to Redis
-    await VisualTestStorageAPI.connect(this.redisClientOptions);
+    await this.visualTestStorageApi.connect();
 
     if (this.visualTestReporterOptions?.log)
       console.debug("[VisualTestReporter] Connected to Redis");
@@ -87,7 +87,7 @@ export class VisualTestReporter implements Reporter {
       testModule.children.allTests("pending")
     ).length;
 
-    const newRun = await VisualTestStorageAPI.startRun(totalTests);
+    const newRun = await this.visualTestStorageApi.startRun(totalTests);
     this.runId = newRun.runId;
 
     if (this.visualTestReporterOptions?.log)
@@ -103,8 +103,6 @@ export class VisualTestReporter implements Reporter {
    * @param testCase The test case that is ready to run
    */
   async onTestCaseReady(testCase: TestCase): Promise<void> {
-    await VisualTestStorageAPI.connect(this.redisClientOptions);
-
     // Basic error logging using vitest logger
     testCase.result().errors?.map((err) => {
       this.vitest.logger.printError(err, {
@@ -118,7 +116,7 @@ export class VisualTestReporter implements Reporter {
     }
     const storyIdentifier = testCase.meta().storyIdentifier;
 
-    await VisualTestStorageAPI.startTest(this.runId, storyIdentifier);
+    await this.visualTestStorageApi.startTest(this.runId, storyIdentifier);
 
     return;
   }
@@ -148,7 +146,7 @@ export class VisualTestReporter implements Reporter {
       visualTestResult;
 
     // Store test result in Redis
-    await VisualTestStorageAPI.finishTest(this.runId, {
+    await this.visualTestStorageApi.finishTest(this.runId, {
       storyIdentifier,
       status,
       baseline,
@@ -185,7 +183,7 @@ export class VisualTestReporter implements Reporter {
     unhandledErrors: ReadonlyArray<SerializedError>,
     reason: TestRunEndReason
   ): Promise<void> {
-    const finishedRun = await VisualTestStorageAPI.finishRun(
+    const finishedRun = await this.visualTestStorageApi.finishRun(
       this.runId,
       reason
     );
@@ -218,7 +216,7 @@ export class VisualTestReporter implements Reporter {
 
     // Do not disconnect here to maintain Redis connection for potential UI interactions
     // This allows running specific tests from the Vitest UI without losing connection
-    await VisualTestStorageAPI.disconnect();
+    await this.visualTestStorageApi.disconnect();
     if (this.visualTestReporterOptions?.log)
       console.debug("[VisualTestReporter] Disconnected from Redis");
 

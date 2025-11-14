@@ -31,12 +31,12 @@ interface ImportMeta {
  * Import from "simple-visual-tests/server" when using in server contexts.
  */
 
-import * as StorageAPI from "./src/storage/VisualTestStorageAPI.js";
+import { VisualTestStorageAPI } from "./src/storage/VisualTestStorageAPI.js";
 import { VisualTestReporter } from "./src/reporter/VisualTestReporter.js";
 import { simpleVisualTests } from "./src/vitestAddon.js";
 
 export {
-  StorageAPI,
+  VisualTestStorageAPI,
   VisualTestReporter,
   simpleVisualTests,
   /**

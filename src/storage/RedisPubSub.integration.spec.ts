@@ -18,6 +18,7 @@ import { RedisContainer, StartedRedisContainer } from "@testcontainers/redis";
 import type { NewVisualTestRun, PublishMsg, StoryIdentifier } from "../types";
 import { rm } from "fs/promises";
 import { createClient, type RedisClientType } from "redis";
+import type { VisualTestStorageAPI } from "./VisualTestStorageAPI.js";
 
 // Image config and helpers
 /**
@@ -117,7 +118,7 @@ const waitForMessages = (
 describe("Redis Publish/Subscribe - Integration Tests", () => {
   let container: StartedRedisContainer;
   let redisUrl: string;
-  let storageAPI: typeof import("../storage/VisualTestStorageAPI");
+  let storageAPI: VisualTestStorageAPI;
   let publisherClient: RedisClientType;
   let subscriberClient: RedisClientType;
 
@@ -128,7 +129,9 @@ describe("Redis Publish/Subscribe - Integration Tests", () => {
   beforeAll(async () => {
     // Mock storage root env variable before importing storage module
     vi.stubEnv("VITE_VISUAL_TEST_IMAGES_PATH", MOCK_STORAGE_ROOT);
-    storageAPI = await import("../storage/VisualTestStorageAPI");
+    storageAPI = new (
+      await import("./VisualTestStorageAPI")
+    ).VisualTestStorageAPI();
 
     // Start Redis container
     container = await new RedisContainer("redis:8")

@@ -1,6 +1,6 @@
 import type { BrowserCommand, BrowserCommandContext } from "vitest/node";
 import type { StoryIdentifier } from "../types/index.js";
-import { getBaseline as getBaselineAPI } from "../storage/VisualTestStorageAPI.js";
+import { VisualTestStorageAPI } from "../storage/VisualTestStorageAPI";
 
 /**
  * Browser command implementation for retrieving baseline images
@@ -20,9 +20,11 @@ export const getBaseline: BrowserCommand<[StoryIdentifier]> = async (
   ctx: BrowserCommandContext,
   storyIdentifier: StoryIdentifier
 ): Promise<Buffer | null> => {
+  const storageApi = VisualTestStorageAPI.getFileStorageOnlyApi();
+
   // Delegates to the storage API which handles filesystem operations
   // and path resolution based on the story identifier. The storage API
   // manages the complexity of generating consistent file paths and
   // handling potential filesystem errors or missing files gracefully.
-  return await getBaselineAPI(storyIdentifier);
+  return await storageApi.getBaseline(storyIdentifier);
 };

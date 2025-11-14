@@ -22,6 +22,7 @@ import type {
 } from "../types";
 import { join } from "path";
 import { access, readdir, readFile, rm, unlink } from "fs/promises";
+import type { VisualTestStorageAPI } from "./VisualTestStorageAPI.js";
 
 // Image config and helpers
 /**
@@ -73,7 +74,7 @@ const getExpectedImagePath = (
 describe("VisualTestStorageAPI - Integration Tests", () => {
   let container: StartedRedisContainer;
   let redisUrl: string;
-  let storageAPI: typeof import("../storage/VisualTestStorageAPI");
+  let storageAPI: VisualTestStorageAPI;
 
   /**
    * Setup before all tests: start Redis container, import storage API module,
@@ -82,7 +83,9 @@ describe("VisualTestStorageAPI - Integration Tests", () => {
   beforeAll(async () => {
     // Mock storage root env variable before important storage module
     vi.stubEnv("VITE_VISUAL_TEST_IMAGES_PATH", MOCK_STORAGE_ROOT);
-    storageAPI = await import("../storage/VisualTestStorageAPI");
+    storageAPI = new (
+      await import("./VisualTestStorageAPI")
+    ).VisualTestStorageAPI();
 
     // Start Redis container
     container = await new RedisContainer("redis:8")

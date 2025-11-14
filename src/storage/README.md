@@ -74,19 +74,27 @@ This approach avoids bloating Redis memory usage while maintaining fast metadata
 
 ## API Reference
 
-### Connection Management
+### Class: VisualTestStorageAPI
 
-- `connect(options)` - Connect to Redis client with configuration options
+The VisualTestStorageAPI class provides methods for managing visual test storage and operations.
+
+#### Constructor
+
+- `new VisualTestStorageAPI(redisOptions?, imageRootPath?)` - Create a new instance of the storage API
+
+#### Connection Management
+
+- `connect(options?)` - Connect to Redis client with configuration options (overwrites constructor redisOptions if set)
 - `disconnect()` - Disconnect from Redis client
 
-### Run Operations
+#### Run Operations
 
 - `startRun(testCount)` - Start a new visual test run
 - `finishRun(runId, reason?)` - Complete a visual test run
 - `getRun(runId)` - Get run data
 - `listAllRuns()` - Get all saved runs
 
-### Test Operations
+#### Test Operations
 
 - `startTest(runId, storyIdentifier)` - Start a new visual test
 - `updateTest(runId, storyIdentifier, partial)` - Update test with new data
@@ -94,17 +102,21 @@ This approach avoids bloating Redis memory usage while maintaining fast metadata
 - `getTest(runId, storyIdentifier)` - Get test data
 - `listTestsForRun(runId)` - Get a list of tests for a run
 
-### Baseline Management
+#### Baseline Management
 
 - `getBaseline(storyIdentifier)` - Get baseline image from filesystem
 - `acceptBaseline(runId, storyIdentifier)` - Accept a new baseline
 - `saveImage(runId, storyIdentifier, buffer, type)` - Save image to appropriate location
 
-### Image Operations
+#### Image Operations
 
 - `getImage(filePath)` - Read image from filesystem
 - `deleteTestImages(runId, storyIdentifier)` - Delete current and diff images for a test
 - `deleteBaseline(storyIdentifier)` - Delete baseline image for a story
+
+#### Static Methods
+
+- `getFileStorageOnlyApi(imageRootPath?)` - Get a singleton instance for filesystem-only operations
 
 ## Event Types (Pub/Sub payload: JSON)
 
@@ -126,34 +138,38 @@ Each event is published to both:
 ### Basic Setup
 
 ```typescript
-import { connect, startRun, finishRun } from "./VisualTestStorageAPI";
+import { VisualTestStorageAPI } from "./VisualTestStorageAPI";
 
-// Connect to Redis
-await connect({ url: "redis://localhost:6379" });
+// Create instance and connect to Redis
+const storage = new VisualTestStorageAPI({ url: "redis://localhost:6379" });
+await storage.connect();
 
 // Start a test run
-const run = await startRun(10); // 10 tests in this run
+const run = await storage.startRun(10); // 10 tests in this run
 
 // Perform tests...
 
 // Finish the run
-await finishRun(run.runId, "passed");
+await storage.finishRun(run.runId, "passed");
 ```
 
 ### Working with Tests
 
 ```typescript
-import { startTest, updateTest, finishTest } from "./VisualTestStorageAPI";
+import { VisualTestStorageAPI } from "./VisualTestStorageAPI";
+
+const storage = new VisualTestStorageAPI({ url: "redis://localhost:6379" });
+await storage.connect();
 
 // Start a test
-const test = await startTest(runId, {
+const test = await storage.startTest(runId, {
   storyId: "button-primary",
   theme: "dark",
   viewport: { width: 1024, height: 768 },
 });
 
 // Update test with results
-await updateTest(runId, test.storyIdentifier, {
+await storage.updateTest(runId, test.storyIdentifier, {
   status: "failed",
   current: currentImageBuffer,
   diff: diffImageBuffer,
@@ -161,7 +177,7 @@ await updateTest(runId, test.storyIdentifier, {
 });
 
 // Finish test with final results
-await finishTest(runId, {
+await storage.finishTest(runId, {
   storyIdentifier: test.storyIdentifier,
   status: "failed",
   baseline: baselineImageBuffer,
@@ -173,6 +189,8 @@ await finishTest(runId, {
 ```
 
 ### Subscribing to Events
+
+The VisualTestStorageAPI handles event publishing internally, but you can still subscribe to events using Redis directly:
 
 ```typescript
 import { createClient } from "redis";
@@ -191,6 +209,20 @@ await client.subscribe(`visualrun:${runId}:channel`, (message) => {
   const event = JSON.parse(message);
   console.log(`Run ${runId} event: ${event.type}`, event.payload);
 });
+```
+
+## Filesystem-Only API
+
+The class provides a static method to get a singleton instance for filesystem-only operations, which is useful for vitest server commands that need to access baselines in the shared FileSystem without Redis:
+
+```typescript
+import { VisualTestStorageAPI } from "./VisualTestStorageAPI";
+
+// Get a filesystem-only instance
+const fileStorage = VisualTestStorageAPI.getFileStorageOnlyApi();
+
+// Use for baseline operations
+const baselineBuffer = await fileStorage.getBaseline(storyIdentifier);
 ```
 
 ## Persistence & Durability
